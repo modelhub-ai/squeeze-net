@@ -1,5 +1,4 @@
 {
-  "docker_id": "modelhub/main_caffe2:0.1.0",
-  "branch_id": "master",
+  "docker_id": "modelhub/main_caffe2:0.2.0",
   "external_contrib_files": []
 }
