@@ -53,13 +53,5 @@
         }
       ]
     }
-  },
-  "script": [
-    {
-      "type": "bash",
-      "variables": {
-        "file_name": "start_squeezenet.sh"
-      }
-    }
-  ]
+  }
 }
