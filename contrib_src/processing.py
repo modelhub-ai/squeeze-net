@@ -43,5 +43,4 @@ class ImageProcessor(ImageProcessorBase):
             obj = {'label': str(labels[str(i)]),
                     'probability': float(probs[i])}
             result.append(obj)
-        print ('postprocessing done.')
         return result
