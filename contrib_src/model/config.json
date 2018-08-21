@@ -1,7 +1,7 @@
 {
   "id": "d50796da-87f2-4493-846e-6eeb498acc63",
   "meta": {
-    "name": "squeeze-net",
+    "name": "squeezenet",
     "application_area": "ImageNet",
     "task": "Classification",
     "task_extended": "ImageNet classification",
