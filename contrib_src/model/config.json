@@ -21,6 +21,7 @@
   },
   "model": {
     "description": "SqueezeNet begins with a standalone convolution layer (conv1), followed by 8 Fire modules (fire2-9), ending with a final conv layer (conv10). We gradually increase the number of filters per fire module from the beginning to the end of the network. SqueezeNet performs max-pooling with a stride of 2 after layers conv1, fire4, fire8, and conv10",
+    "provenance": "https://github.com/onnx/models/tree/master/squeezenet",
     "architecture": "Convolutional Neural Network (CNN)",
     "learning_type": "Supervised learning",
     "format": ".onnx",
