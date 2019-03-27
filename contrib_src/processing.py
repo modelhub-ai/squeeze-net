@@ -1,38 +1,37 @@
+import numpy as np
+import os
+import mxnet as mx
 from modelhublib.processor import ImageProcessorBase
 import PIL
 import SimpleITK
 import numpy as np
 import json
-
+from mxnet.gluon.data.vision import transforms
 
 class ImageProcessor(ImageProcessorBase):
 
     def _preprocessBeforeConversionToNumpy(self, image):
         if isinstance(image, PIL.Image.Image):
-            image = image.resize((224,224), resample = PIL.Image.LANCZOS)
-        elif isinstance(image, SimpleITK.Image):
-            newSize = [224, 224]
-            referenceImage = SimpleITK.Image(newSize, image.GetPixelIDValue())
-            referenceImage.SetOrigin(image.GetOrigin())
-            referenceImage.SetDirection(image.GetDirection())
-            referenceImage.SetSpacing([sz*spc/nsz for nsz,sz,spc in zip(newSize, 
-                                                                        image.GetSize(), 
-                                                                        image.GetSpacing())])
-            image = SimpleITK.Resample(image, referenceImage)
+            image = np.array(image).astype(np.float32)
+            if len(image.shape) > 2:
+                image = image[:,:,0:3]
+            else:
+                image = np.stack((image,)*3, axis=-1)
+            arr = mx.nd.array(image)
+            transform_fn = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+            ])
+            arr = transform_fn(arr)
+            arr = arr.expand_dims(axis=0)
+            return arr.asnumpy()
         else:
             raise IOError("Image Type not supported for preprocessing.")
-        return image
 
     def _preprocessAfterConversionToNumpy(self, npArr):
-        if npArr.shape[1] > 3:
-            npArr = npArr[:,0:3,:,:]
-        elif npArr.shape[1] < 3:
-            npArr = npArr[:,[0],:,:]
-            npArr = np.concatenate((npArr, npArr[:,[0],:,:]), axis = 1)
-            npArr = np.concatenate((npArr, npArr[:,[0],:,:]), axis = 1)
-        #npArr[:, (2, 1, 0), :, :]
-        npArr = npArr - 127.5
-        return npArr
+        return mx.nd.array(npArr)
 
     def computeOutput(self, inferenceResults):
         probs = np.squeeze(np.asarray(inferenceResults))
